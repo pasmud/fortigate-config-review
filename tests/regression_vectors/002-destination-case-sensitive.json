@@ -1,0 +1,9 @@
+{
+  "title": "A differently cased destination is unknown even if unique",
+  "command": "summary",
+  "config": [
+    "config firewall address", "edit \"Paper Desk\"", "next", "end",
+    "config firewall policy", "edit 29", "set srcaddr all", "set dstaddr \"paper desk\"", "next", "end"
+  ],
+  "expected": {"exit": 1, "findings": [["unknown-address-reference", 6, "policy", 29, "dstaddr", "paper desk"]], "withheld_reason": "address-reference-findings"}
+}
