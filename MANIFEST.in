@@ -1,3 +1,4 @@
 recursive-include examples *.txt
 recursive-include scripts *.ps1
 recursive-include tests test_*.py
+recursive-include tests/regression_vectors *.json

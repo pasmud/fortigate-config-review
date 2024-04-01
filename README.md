@@ -89,6 +89,12 @@ Install the command into an activated virtual environment from the repository ro
 
 To develop, use `python -m pip install '.[dev]'` in your virtual environment, then run `python -m pytest -q` and `python -m ruff check .`. Wrapper integration tests skip if `pwsh` is unavailable locally. On pushes and pull requests, GitHub Actions requires hosted PowerShell on Ubuntu and Windows and smoke-tests the installed Python command outside the checkout.
 
+### Offline regression vectors
+
+Run `python -m pytest -q tests/test_regression_vectors.py` to check the synthetic exports in `tests/regression_vectors/`. Each JSON file is a standalone case with explicit FortiOS lines and hand-written expectations. The cases cover configured labels and aliases, built-in services, group exclusions and cycles, ignored categories, policy status and order, and ID-based comparison and reporting.
+
+Summary cases check the named report fields and expect no findings unless stated. Finding rows are `[code, edit line, record type, key, field, reference]`. Inventory rows are `[name, edit line, settings]`. Diff cases check the entire report; omitted change lists and side-specific findings must be empty, and omitted `common_order_changed` must be false. To run one case, pass its filename stem to `-k`.
+
 ## License
 
 [MIT](LICENSE).
