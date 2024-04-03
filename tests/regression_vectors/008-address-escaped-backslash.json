@@ -1,0 +1,9 @@
+{
+  "title": "A literal backslash distinguishes otherwise similar labels",
+  "command": "summary",
+  "config": [
+    "config firewall address", "edit \"Shelf\\\\Blue\"", "next", "edit ShelfBlue", "next", "end",
+    "config firewall policy", "edit 7", "set srcaddr \"Shelf\\\\Blue\"", "set dstaddr all", "next", "end"
+  ],
+  "expected": {"exit": 0, "candidates": ["ShelfBlue"]}
+}
