@@ -1,0 +1,6 @@
+{
+  "title": "Exported all contributes to inventory but is never a candidate",
+  "command": "summary",
+  "config": ["config firewall address", "edit all", "next", "edit ALL", "next", "end", "config firewall policy", "end"],
+  "expected": {"exit": 0, "counts": {"addresses": 2, "groups": 0, "services": 0, "service_groups": 0, "policies": 0}, "candidates": ["ALL"]}
+}
