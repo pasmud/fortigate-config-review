@@ -1,0 +1,9 @@
+{
+  "title": "A policy with neither address field reports two missing lists",
+  "command": "summary",
+  "config": ["config firewall policy", "edit 17", "set action deny", "next", "end"],
+  "expected": {"exit": 1, "findings": [
+    ["missing-address-list", 2, "policy", 17, "srcaddr", null],
+    ["missing-address-list", 2, "policy", 17, "dstaddr", null]
+  ], "withheld_reason": "address-reference-findings"}
+}
