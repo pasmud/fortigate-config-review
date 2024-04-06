@@ -1,0 +1,9 @@
+{
+  "title": "Opaque mentions use Unicode case folding, not simple lowercase",
+  "command": "summary",
+  "config": [
+    "config firewall address", "edit Straße", "next", "end",
+    "config system synthetic", "edit STRASSE", "next", "end", "config firewall policy", "end"
+  ],
+  "expected": {"exit": 0, "candidates": [], "opaque_mentions": ["Straße"]}
+}
