@@ -1,0 +1,9 @@
+{
+  "title": "An exact reference outranks an opaque mention of the same alias",
+  "command": "summary",
+  "config": [
+    "config firewall address", "edit INK", "next", "edit ink", "next", "end",
+    "config firewall policy", "edit 8", "set srcaddr INK", "set dstaddr all", "set comments Ink", "next", "end"
+  ],
+  "expected": {"exit": 0, "candidates": [], "opaque_mentions": ["ink"]}
+}
