@@ -1,0 +1,9 @@
+{
+  "title": "Opaque matching holds a whole token but never a substring",
+  "command": "summary",
+  "config": [
+    "config firewall address", "edit Pin", "next", "edit Pinboard", "next", "end",
+    "config system synthetic", "set notes PINBOARD", "end", "config firewall policy", "end"
+  ],
+  "expected": {"exit": 0, "candidates": ["Pin"], "opaque_mentions": ["Pinboard"]}
+}
