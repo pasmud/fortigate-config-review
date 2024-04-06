@@ -1,0 +1,9 @@
+{
+  "title": "Setting keys in ignored tables do not hold address objects",
+  "command": "summary",
+  "config": [
+    "config firewall address", "edit pencil", "next", "edit Paper", "next", "end",
+    "config system synthetic", "set pencil Paper", "end", "config firewall policy", "end"
+  ],
+  "expected": {"exit": 0, "candidates": ["pencil"], "opaque_mentions": ["Paper"]}
+}
