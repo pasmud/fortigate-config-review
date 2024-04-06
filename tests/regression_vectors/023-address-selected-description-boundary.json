@@ -1,0 +1,9 @@
+{
+  "title": "Selected address values do not count as opaque address mentions",
+  "command": "summary",
+  "config": [
+    "config firewall address", "edit AddressHolder", "set fqdn name.example.invalid", "set comment Spare", "next",
+    "edit name.example.invalid", "next", "edit Spare", "next", "end", "config firewall policy", "end"
+  ],
+  "expected": {"exit": 0, "candidates": ["AddressHolder", "name.example.invalid"], "opaque_mentions": ["Spare"]}
+}
