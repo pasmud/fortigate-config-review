@@ -1,0 +1,9 @@
+{
+  "title": "An opaque folded match conservatively holds both case aliases",
+  "command": "summary",
+  "config": [
+    "config firewall address", "edit Ink", "next", "edit ink", "next", "end",
+    "config system synthetic", "set label INK", "end", "config firewall policy", "end"
+  ],
+  "expected": {"exit": 0, "candidates": [], "opaque_mentions": ["Ink", "ink"]}
+}
