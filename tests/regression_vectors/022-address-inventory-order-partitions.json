@@ -1,0 +1,9 @@
+{
+  "title": "Candidate and opaque lists each preserve address export order",
+  "command": "summary",
+  "config": [
+    "config firewall address", "edit Zinc", "next", "edit Marble", "next", "edit Amber", "next", "edit Brass", "next", "end",
+    "config system synthetic", "set notes Brass Marble", "end", "config firewall policy", "end"
+  ],
+  "expected": {"exit": 0, "candidates": ["Zinc", "Amber"], "opaque_mentions": ["Marble", "Brass"]}
+}
