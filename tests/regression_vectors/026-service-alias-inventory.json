@@ -1,0 +1,9 @@
+{
+  "title": "Distinct service aliases keep identical port definitions separately",
+  "command": "inventory",
+  "config": [
+    "config firewall service custom", "edit \"Gallery Preview\"", "set tcp-portrange 8443", "next",
+    "edit \"Archive Preview\"", "set tcp-portrange 8443", "next", "end"
+  ],
+  "expected": {"services": [["Gallery Preview", 2, {"tcp-portrange": ["8443"]}], ["Archive Preview", 5, {"tcp-portrange": ["8443"]}]]}
+}
