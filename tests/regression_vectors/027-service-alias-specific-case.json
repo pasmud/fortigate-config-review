@@ -1,0 +1,9 @@
+{
+  "title": "A service case diagnostic follows the alias, not its port range",
+  "command": "summary",
+  "config": [
+    "config firewall service custom", "edit Exhibit", "set tcp-portrange 8443", "next", "edit Archive", "set tcp-portrange 8443", "next", "end",
+    "config firewall policy", "edit 28", "set srcaddr all", "set dstaddr all", "set service Exhibit archive", "next", "end"
+  ],
+  "expected": {"exit": 1, "findings": [["service-reference-case-mismatch", 10, "policy", 28, "service", "archive"]]}
+}
