@@ -5,10 +5,16 @@ from dataclasses import dataclass, field
 
 ADDRESS = ("firewall", "address")
 GROUP = ("firewall", "addrgrp")
+SERVICE = ("firewall", "service", "custom")
+SERVICE_GROUP = ("firewall", "service", "group")
+SERVICE_TABLES = frozenset({SERVICE, SERVICE_GROUP})
 POLICY = ("firewall", "policy")
 FIELDS = {
     ADDRESS: frozenset({"type", "subnet", "start-ip", "end-ip", "fqdn", "wildcard"}),
     GROUP: frozenset({"member", "exclude", "exclude-member"}),
+    SERVICE: frozenset({"protocol", "protocol-number", "tcp-portrange", "udp-portrange",
+                        "sctp-portrange", "icmptype", "icmpcode"}),
+    SERVICE_GROUP: frozenset({"member"}),
     POLICY: frozenset({
         "name", "status", "action", "srcintf", "dstintf", "srcaddr", "dstaddr",
         "srcaddr-negate", "dstaddr-negate", "schedule", "service", "service-negate",
@@ -44,6 +50,20 @@ class Group:
 
 
 @dataclass(frozen=True)
+class Service:
+    name: str
+    line: int
+    settings: dict[str, tuple[str, ...]]
+
+
+@dataclass(frozen=True)
+class ServiceGroup:
+    name: str
+    line: int
+    settings: dict[str, tuple[str, ...]]
+
+
+@dataclass(frozen=True)
 class Policy:
     id: int
     line: int
@@ -57,6 +77,8 @@ class Config:
     policies: tuple[Policy, ...]
     has_policy_table: bool
     opaque_address_mentions: frozenset[str] = field(repr=False)
+    services: tuple[Service, ...] = ()
+    service_groups: tuple[ServiceGroup, ...] = ()
 
 
 @dataclass
@@ -92,6 +114,8 @@ def parse(text: str) -> Config:
     seen_keys: dict[tuple[str, ...], set[str | int]] = {table: set() for table in FIELDS}
     addresses: list[Address] = []
     groups: list[Group] = []
+    services: list[Service] = []
+    service_groups: list[ServiceGroup] = []
     policies: list[Policy] = []
     opaque_tokens: set[str] = set()
     for line, raw in enumerate(text.removeprefix("\ufeff").split("\n"), 1):
@@ -129,7 +153,7 @@ def parse(text: str) -> Config:
                 if key in seen_keys[table]:
                     raise ParseError(line, "duplicate record key")
                 seen_keys[table].add(key)
-            else:
+            if table not in FIELDS or table in SERVICE_TABLES:
                 opaque_tokens.add(args[0].casefold())
             stack.append(_Frame("edit", line, table, key))
         elif command == "next":
@@ -140,6 +164,10 @@ def parse(text: str) -> Config:
                 addresses.append(Address(str(frame.key), frame.line, frame.settings))
             elif table == GROUP:
                 groups.append(Group(str(frame.key), frame.line, frame.settings))
+            elif table == SERVICE:
+                services.append(Service(str(frame.key), frame.line, frame.settings))
+            elif table == SERVICE_GROUP:
+                service_groups.append(ServiceGroup(str(frame.key), frame.line, frame.settings))
             elif table == POLICY:
                 policies.append(Policy(int(frame.key), frame.line, frame.settings))
         elif command == "end":
@@ -155,9 +183,11 @@ def parse(text: str) -> Config:
             if name in frame.seen:
                 raise ParseError(line, "duplicate setting in reviewed edit")
             frame.seen.add(name)
-            if name in FIELDS[table]:
+            selected = name in FIELDS[table]
+            if selected:
                 frame.settings[name] = tuple(values)
-            else:
+            # Service values are not interpreted as address references.
+            if not selected or table in SERVICE_TABLES:
                 opaque_tokens.update(value.casefold() for value in values)
         elif (
             table == ("system", "global") and command == "set"
@@ -172,4 +202,5 @@ def parse(text: str) -> Config:
     if not seen_tables:
         raise ParseError(1, "no reviewed section found")
     mentions = frozenset(a.name for a in addresses if a.name.casefold() in opaque_tokens)
-    return Config(tuple(addresses), tuple(groups), tuple(policies), POLICY in seen_tables, mentions)
+    return Config(tuple(addresses), tuple(groups), tuple(policies), POLICY in seen_tables, mentions,
+                  tuple(services), tuple(service_groups))

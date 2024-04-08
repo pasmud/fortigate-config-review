@@ -73,7 +73,7 @@ def test_nested_diamond_does_not_report_a_cycle():
 
 def test_unused_retains_disabled_refs_orphan_group_members_exclusions_and_opaque_mentions():
     names = ["Z-Inactive", "A-Member", "A-Excluded", "Held Here", "Held Key",
-             "Held Field", "Z-Unmentioned", "A-Unmentioned", "all"]
+             "Held Field", "Held Service", "Z-Unmentioned", "A-Unmentioned", "all"]
     addresses = "\n".join(f'edit "{name}"\nnext' for name in names)
     config = parse(f'''config firewall address
 {addresses}
@@ -99,10 +99,15 @@ config system fictitious
         set unrelated "opaque arbitrary value"
     next
 end
+config firewall service group
+    edit "Review Suite"
+        set member "Held Service"
+    next
+end
 ''')
     result = unused_addresses(config)
     assert result.candidates == ("Z-Unmentioned", "A-Unmentioned")
-    assert result.opaque_mentions == ("Held Here", "Held Key", "Held Field")
+    assert result.opaque_mentions == ("Held Here", "Held Key", "Held Field", "Held Service")
     assert not result.withheld_reason
     assert "opaque arbitrary value" not in repr(config)
 

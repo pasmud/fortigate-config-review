@@ -44,6 +44,30 @@ def test_bom_crlf_and_empty_reviewed_section():
     assert parse("\ufeffconfig firewall policy\r\nend\r\n").policies == ()
 
 
+def test_service_tables_keep_order_and_selected_settings():
+    config = parse('''config firewall service custom
+    edit "Review Web"
+        set protocol TCP/UDP/SCTP
+        set tcp-portrange 8443 9443
+        set comment "not retained"
+    next
+    edit "Review Time"
+        set udp-portrange 123
+    next
+end
+config firewall service group
+    edit "Review Suite"
+        set member "Review Web" "Review Time"
+    next
+end
+''')
+    assert [(s.name, s.line) for s in config.services] == [("Review Web", 2), ("Review Time", 7)]
+    assert config.services[0].settings == {
+        "protocol": ("TCP/UDP/SCTP",), "tcp-portrange": ("8443", "9443"),
+    }
+    assert config.service_groups[0].settings == {"member": ("Review Web", "Review Time")}
+
+
 @pytest.mark.parametrize(("text", "error"), [
     ("", "no reviewed section"),
     ("config firewall policy\nedit 11\nend", "line 3: end"),
@@ -60,6 +84,8 @@ def test_bom_crlf_and_empty_reviewed_section():
     ("config system global\nset vdom-mode multi-vdom", "outside the root scope"),
     ("config system fiction\nconfig firewall policy", "at the root"),
     ("config firewall policy\nedit 7\nconfig nested", "must be flat"),
+    ("config firewall service custom\nedit sample\nnext\nedit sample", "duplicate record"),
+    ("config system fiction\nconfig firewall service group", "at the root"),
 ])
 def test_rejects_ambiguous_or_unsupported_exports(text, error):
     with pytest.raises(ParseError, match=error):

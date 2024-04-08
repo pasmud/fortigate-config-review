@@ -23,7 +23,7 @@ $LASTEXITCODE # 3 for this fictional change
 
 ## Input contract
 
-- A regular, local UTF-8 file (optional BOM, LF or CRLF), containing at least one of `config firewall address`, `config firewall addrgrp`, or `config firewall policy`. `diff` requires an explicit policy section in both inputs; an empty section is valid and means zero policies. Compare exports from the same logical firewall scope, where IDs are stable.
+- A regular, local UTF-8 file (optional BOM, LF or CRLF), containing at least one reviewed table: `config firewall address`, `config firewall addrgrp`, `config firewall service custom`, `config firewall service group`, or `config firewall policy`. `diff` requires an explicit policy section in both inputs; an empty section is valid and means zero policies. Compare exports from the same logical firewall scope, where IDs are stable.
 - Only one unnamed root scope is supported. Explicit `config vdom`/`config global` wrappers, non-`no-vdom` settings in `config system global`, and nested reviewed tables are rejected rather than merged.
 - Reviewed tables contain flat `edit KEY` / `next` records with `set KEY VALUE [VALUE ...]` entries, and close with `end`. Indentation is optional. Blank lines and whole lines starting with `#` after indentation are ignored. Values can be bare tokens or double-quoted strings with `\"` and `\\` escapes. There are no inline comments, multiline values, or update commands such as `unset` and `move` in reviewed records. Policy IDs are ASCII decimals from 1 to 4294967294; equivalent IDs such as `7` and `07` are duplicates. Duplicate reviewed tables, record keys, or settings are rejected.
 - Other tables are structurally checked for balanced blocks but their settings are not interpreted. Only selected settings are retained in reviewed records. Comparisons are case-sensitive; value token order is preserved.
@@ -31,6 +31,8 @@ $LASTEXITCODE # 3 for this fictional change
 ## Checks and reports
 
 **Summary.** Text shows inventory counts, an ordered policy outline, findings, and unused-address results. JSON includes `counts`, `has_policy_table`, `policies` (ID, `edit` line, and selected `settings` as token arrays), `findings`, and `unused_addresses`. Findings give a code, the one-based `edit` line, record type and ID/name, with a field and reference when relevant.
+
+`counts.services` and `counts.service_groups` count records explicitly included in the export. The parser retains selected protocol, port-range, and ICMP settings for services and `member` for service groups. Service names and values can still hold same-named address objects for manual review as opaque mentions.
 
 | Check | Scope |
 | --- | --- |

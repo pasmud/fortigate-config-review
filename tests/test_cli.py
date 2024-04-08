@@ -27,13 +27,34 @@ def test_summary_json_and_text_for_file_with_spaces(tmp_path):
     assert result.returncode == 0 and not result.stderr
     assert "ignored fictional comment" not in result.stdout
     report = json.loads(result.stdout)
-    assert report["counts"] == {"addresses": 0, "groups": 0, "policies": 1}
+    assert report["counts"] == {"addresses": 0, "groups": 0, "policies": 1,
+                                "services": 0, "service_groups": 0}
     assert report["policies"][0]["id"] == 17
     assert report["policies"][0]["settings"]["action"] == ["deny"]
     assert report["findings"] == []
     text = invoke("summary", str(path))
     assert text.returncode == 0 and "Policies (export order):" in text.stdout
     assert '17 (line 2): name=["Fictional review"]' in text.stdout
+
+
+def test_summary_counts_configured_services_without_a_policy_table(tmp_path):
+    path = tmp_path / "services.txt"
+    path.write_text('''config firewall service custom
+    edit "Review Web"
+        set tcp-portrange 8443
+    next
+end
+config firewall service group
+    edit "Review Suite"
+        set member "Review Web"
+    next
+end
+''', encoding="utf-8")
+    result = invoke("summary", str(path), "--format", "json")
+    assert result.returncode == 0 and not result.stderr
+    report = json.loads(result.stdout)
+    assert report["counts"]["services"] == report["counts"]["service_groups"] == 1
+    assert report["has_policy_table"] is False
 
 
 def test_diff_status_precedence_and_side_specific_findings(tmp_path):

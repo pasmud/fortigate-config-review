@@ -42,6 +42,7 @@ def _summary(config: Config, output: str) -> int:
     findings = validate(config)
     unused = unused_addresses(config, findings)
     counts = {"addresses": len(config.addresses), "groups": len(config.groups),
+              "services": len(config.services), "service_groups": len(config.service_groups),
               "policies": len(config.policies)}
     policies = [{"id": p.id, "line": p.line, "settings": policy_settings(p)}
                 for p in config.policies]
