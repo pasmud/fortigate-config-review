@@ -1,0 +1,9 @@
+{
+  "title": "A configured service with sharp S yields a case-fold diagnostic",
+  "command": "summary",
+  "config": [
+    "config firewall service custom", "edit Straße", "next", "end",
+    "config firewall policy", "edit 8", "set srcaddr all", "set dstaddr all", "set service STRASSE", "next", "end"
+  ],
+  "expected": {"exit": 1, "findings": [["service-reference-case-mismatch", 6, "policy", 8, "service", "STRASSE"]]}
+}
