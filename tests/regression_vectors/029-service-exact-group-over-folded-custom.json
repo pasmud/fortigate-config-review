@@ -1,0 +1,10 @@
+{
+  "title": "An exact group beats a folded match to a custom service",
+  "command": "summary",
+  "config": [
+    "config firewall service custom", "edit Bundle", "next", "end",
+    "config firewall service group", "edit bundle", "set member Bundle", "next", "end",
+    "config firewall policy", "edit 8", "set srcaddr all", "set dstaddr all", "set service bundle", "next", "end"
+  ],
+  "expected": {"exit": 0, "counts": {"addresses": 0, "groups": 0, "policies": 1, "services": 1, "service_groups": 1}}
+}
