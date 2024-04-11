@@ -1,0 +1,9 @@
+{
+  "title": "A quoted custom service mismatch is one group member finding",
+  "command": "summary",
+  "config": [
+    "config firewall service group", "edit Catalog", "set member \"desk preview\"", "next", "end",
+    "config firewall service custom", "edit \"Desk Preview\"", "next", "end"
+  ],
+  "expected": {"exit": 1, "findings": [["service-reference-case-mismatch", 2, "service-group", "Catalog", "member", "desk preview"]], "withheld_reason": "missing-policy-section"}
+}
