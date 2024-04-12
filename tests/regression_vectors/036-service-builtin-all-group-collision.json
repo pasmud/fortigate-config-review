@@ -1,0 +1,6 @@
+{
+  "title": "A group named ALL collides without creating a self-cycle",
+  "command": "summary",
+  "config": ["config firewall service group", "edit ALL", "set member ALL", "next", "end", "config firewall policy", "end"],
+  "expected": {"exit": 1, "findings": [["service-name-collision", 2, "service-group", "ALL", null, null]], "withheld_reason": null}
+}
