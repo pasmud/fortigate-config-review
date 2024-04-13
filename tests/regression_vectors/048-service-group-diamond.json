@@ -1,0 +1,9 @@
+{
+  "title": "An exact service-group diamond is acyclic even with repeated edges",
+  "command": "summary",
+  "config": [
+    "config firewall service group", "edit Catalog", "set member Cover Index Cover", "next",
+    "edit Index", "set member Pages", "next", "edit Pages", "set member ALL", "next", "edit Cover", "set member Pages", "next", "end"
+  ],
+  "expected": {"exit": 0, "counts": {"addresses": 0, "groups": 0, "policies": 0, "services": 0, "service_groups": 4}}
+}
