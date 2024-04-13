@@ -1,0 +1,9 @@
+{
+  "title": "An empty service group name is still an opaque address mention",
+  "command": "summary",
+  "config": [
+    "config firewall address", "edit Tray", "next", "edit Spare", "next", "end",
+    "config firewall service group", "edit TRAY", "next", "end", "config firewall policy", "end"
+  ],
+  "expected": {"exit": 0, "candidates": ["Spare"], "opaque_mentions": ["Tray"]}
+}
