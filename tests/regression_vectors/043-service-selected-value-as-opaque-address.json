@@ -1,0 +1,9 @@
+{
+  "title": "A selected service protocol value can hold an address label",
+  "command": "summary",
+  "config": [
+    "config firewall address", "edit icmp", "next", "end",
+    "config firewall service custom", "edit EchoSample", "set protocol ICMP", "next", "end", "config firewall policy", "end"
+  ],
+  "expected": {"exit": 0, "candidates": [], "opaque_mentions": ["icmp"]}
+}
