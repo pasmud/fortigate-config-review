@@ -1,0 +1,9 @@
+{
+  "title": "An unlisted service group member holds an address only opaquely",
+  "command": "summary",
+  "config": [
+    "config firewall address", "edit Ledger", "next", "end",
+    "config firewall service group", "edit Catalog", "set member LEDGER", "next", "end", "config firewall policy", "end"
+  ],
+  "expected": {"exit": 0, "candidates": [], "opaque_mentions": ["Ledger"], "withheld_reason": null}
+}
