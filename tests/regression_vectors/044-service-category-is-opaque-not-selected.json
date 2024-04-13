@@ -1,0 +1,6 @@
+{
+  "title": "Service inventory keeps ordered port ranges but omits category",
+  "command": "inventory",
+  "config": ["config firewall service custom", "edit Preview", "set category Fictional", "set udp-portrange 5300 5302-5304", "next", "end"],
+  "expected": {"services": [["Preview", 2, {"udp-portrange": ["5300", "5302-5304"]}]]}
+}
