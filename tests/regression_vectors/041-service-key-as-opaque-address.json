@@ -1,0 +1,9 @@
+{
+  "title": "A custom service key can hold a same-named address without a rule",
+  "command": "summary",
+  "config": [
+    "config firewall address", "edit Preview", "next", "end",
+    "config firewall service custom", "edit preview", "next", "end", "config firewall policy", "end"
+  ],
+  "expected": {"exit": 0, "candidates": [], "opaque_mentions": ["Preview"]}
+}
