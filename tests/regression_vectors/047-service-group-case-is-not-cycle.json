@@ -1,0 +1,6 @@
+{
+  "title": "A folded service group reference does not become a cycle edge",
+  "command": "summary",
+  "config": ["config firewall service group", "edit Catalog", "set member Pages", "next", "edit Pages", "set member catalog", "next", "end"],
+  "expected": {"exit": 1, "findings": [["service-reference-case-mismatch", 5, "service-group", "Pages", "member", "catalog"]]}
+}
