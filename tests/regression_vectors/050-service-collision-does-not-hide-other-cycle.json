@@ -1,0 +1,12 @@
+{
+  "title": "An ambiguous service group does not hide a separate exact cycle",
+  "command": "summary",
+  "config": [
+    "config firewall service custom", "edit Shared", "next", "end",
+    "config firewall service group", "edit Shared", "set member Shared", "next", "edit Loop", "set member Shared Loop", "next", "end"
+  ],
+  "expected": {"exit": 1, "findings": [
+    ["service-name-collision", 6, "service-group", "Shared", null, null],
+    ["service-group-cycle", 9, "service-group", "Loop", "member", "Loop"]
+  ]}
+}
