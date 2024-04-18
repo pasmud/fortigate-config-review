@@ -1,0 +1,10 @@
+{
+  "title": "An enabled exclusion retains its unreferenced address member",
+  "command": "summary",
+  "config": [
+    "config firewall address", "edit OmitCard", "next", "edit SpareCard", "next", "end",
+    "config firewall addrgrp", "edit SamplePack", "set member all", "set exclude enable", "set exclude-member OmitCard", "next", "end",
+    "config firewall policy", "end"
+  ],
+  "expected": {"exit": 0, "candidates": ["SpareCard"], "opaque_mentions": []}
+}
