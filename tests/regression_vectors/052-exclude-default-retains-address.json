@@ -1,0 +1,9 @@
+{
+  "title": "An exclusion list retains its address without an exclude flag",
+  "command": "summary",
+  "config": [
+    "config firewall address", "edit Cutout", "next", "end",
+    "config firewall addrgrp", "edit SamplePack", "set exclude-member Cutout", "next", "end", "config firewall policy", "end"
+  ],
+  "expected": {"exit": 0, "candidates": [], "opaque_mentions": [], "withheld_reason": null}
+}
