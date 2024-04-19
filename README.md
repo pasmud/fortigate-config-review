@@ -1,6 +1,6 @@
 # FortiGate Config Review
 
-An offline reviewer for local FortiOS text exports. Check selected address references, inspect policy order, compare policy IDs across backups, and find address objects worth reviewing for possible disuse. No appliance connections, configuration writes, or deployment commands. The included exports are entirely fictional.
+An offline reviewer for local FortiOS text exports. Check selected address and service references, inspect policy order, compare policy IDs across backups, and find address objects worth reviewing for possible disuse. No appliance connections, configuration writes, or deployment commands. The included exports are entirely fictional.
 
 ## Quick start
 
@@ -38,13 +38,16 @@ $LASTEXITCODE # 3 for this fictional change
 | --- | --- |
 | Address reference resolution | Policy `srcaddr` and `dstaddr`, and group `member` and `exclude-member`; disabled rules and inactive excludes are checked. The IPv4 `all` address is recognized whether implicit or exported. Missing policy address lists are findings, not inferred. |
 | Namespace and cycles | An address/group name collision or a group named `all` is a finding. Group membership and exclusion edges are checked for cycles. |
+| Service reference diagnostics | Checks explicit policy `service` lists (including disabled policies) and service group `member` lists. A reference with no exact match but a case-insensitive match to a configured name or `ALL` is a possible case mismatch. Service/group name collisions (including a group named `ALL`) and cycles through unambiguous, exact configured group names are findings. |
 | Unused address candidates | Any policy or group reference retains an object, even if the rule is disabled or the group has no policy reference. A case-insensitive, whole-token name match in an ignored value or ignored edit key also keeps an object out of `candidates`, and is listed under `opaque_mentions` unless already referenced. `all` is not a candidate. Results are withheld when the policy section is absent or there are address reference findings; JSON gives `withheld_reason`. |
+
+Service lists may be omitted, and a name absent from the export may be a built-in. Neither is flagged on its own. Service findings do not withhold address candidates.
 
 An unused-address candidate is a prompt for manual review, not proof that an object is safe to remove. Ignored tables are not semantically analyzed; indirect or differently encoded references can be missed, and name coincidences can retain objects. Use complete, authorized local exports and treat both input and reports as sensitive.
 
 **Diff.** Matches records by numeric policy ID. `added` and `changed` are in after-export order; `removed` is in before-export order. `before_order`/`after_order` include all IDs, while `common_order_changed` compares the relative order of just the IDs present in both inputs. A field change has `before` and `after` token arrays or `null` for an absent value. Findings are reported separately for each input. JSON also reports `has_changes`, independent of findings.
 
-The selected policy fields are `name`, `status`, `action`, `srcintf`, `dstintf`, `srcaddr`, `dstaddr`, `srcaddr-negate`, `dstaddr-negate`, `schedule`, `service`, `service-negate`, `nat`, and `logtraffic`. Omitted `action` is normalized to `deny`, omitted `status` to `enable`, and omitted `nat` and the three negate flags to `disable`. Other omitted fields remain absent. The diff does not compare address or group definitions, resolve interface/service/schedule references, evaluate traffic, or guarantee equivalent behavior. A report with no findings is not a full FortiOS validation.
+The selected policy fields are `name`, `status`, `action`, `srcintf`, `dstintf`, `srcaddr`, `dstaddr`, `srcaddr-negate`, `dstaddr-negate`, `schedule`, `service`, `service-negate`, `nat`, and `logtraffic`. Omitted `action` is normalized to `deny`, omitted `status` to `enable`, and omitted `nat` and the three negate flags to `disable`. Other omitted fields remain absent. The diff does not compare object or group definitions, resolve interface or schedule references, evaluate traffic, or guarantee equivalent behavior. A report with no findings is not a full FortiOS validation.
 
 ### Exit status
 
@@ -53,7 +56,7 @@ Reports go to stdout, command and input errors to stderr. PowerShell forwards th
 | Code | Meaning |
 | --- | --- |
 | `0` | Report completed without reference findings. Changes alone do not fail by default. |
-| `1` | Report completed with address-reference findings in at least one input. |
+| `1` | Report completed with address or service reference findings in at least one input. |
 | `2` | Invalid CLI arguments, unreadable or unsupported input, or missing policy table for comparison; no report. |
 | `3` | Clean diff with reportable changes and `--fail-on-change` / `-FailOnChange` enabled. |
 

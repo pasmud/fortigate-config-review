@@ -72,6 +72,31 @@ def test_diff_status_precedence_and_side_specific_findings(tmp_path):
     assert result.returncode == 1 and "address-reference-findings" in result.stdout
 
 
+def test_service_findings_fail_the_report_without_withholding_address_candidates(tmp_path):
+    shared = '''config firewall address
+    edit "Review Label"
+    next
+end
+config firewall service custom
+    edit "Review Web"
+    next
+end
+'''
+    before = tmp_path / "before.txt"
+    after = tmp_path / "after.txt"
+    before.write_text(shared + POLICY, encoding="utf-8")
+    altered = POLICY.replace("set dstaddr all", 'set dstaddr all\n        set service "review web"')
+    after.write_text(shared + altered, encoding="utf-8")
+    summary = invoke("summary", "--format", "json", str(after))
+    assert summary.returncode == 1 and not summary.stderr
+    report = json.loads(summary.stdout)
+    assert [f["code"] for f in report["findings"]] == ["service-reference-case-mismatch"]
+    assert report["unused_addresses"]["candidates"] == ["Review Label"]
+    diff = invoke("diff", "--fail-on-change", str(before), str(after))
+    assert diff.returncode == 1 and not diff.stderr
+    assert "Before findings: 0" in diff.stdout and "After findings: 1" in diff.stdout
+
+
 def test_diff_only_fails_on_clean_change_when_requested(tmp_path):
     before = tmp_path / "before.txt"
     after = tmp_path / "after.txt"

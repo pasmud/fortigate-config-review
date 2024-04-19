@@ -71,6 +71,56 @@ def test_nested_diamond_does_not_report_a_cycle():
     assert not validate(parse(f"config firewall addrgrp\n{content}\nend"))
 
 
+def test_service_findings_use_observed_names_and_unambiguous_group_edges():
+    config = parse('''config firewall service custom
+    edit "Review Web"
+    next
+end
+config firewall service group
+    edit "Review Web"
+        set member "Review Web"
+    next
+    edit "Review Parent"
+        set member "Review Child" "Review Web" HTTPS
+    next
+    edit "Review Child"
+        set member "Review Parent" "Review Parent" "review web"
+    next
+end
+config firewall policy
+    edit 17
+        set status disable
+        set srcaddr all
+        set dstaddr all
+        set service "review parent" "review parent" ALL DNS
+    next
+end
+''')
+    findings = validate(config)
+    assert [(f.line, f.code, f.key, f.field, f.reference) for f in findings] == [
+        (6, "service-name-collision", "Review Web", None, None),
+        (12, "service-reference-case-mismatch", "Review Child", "member", "review web"),
+        (12, "service-group-cycle", "Review Child", "member", "Review Parent"),
+        (17, "service-reference-case-mismatch", 17, "service", "review parent"),
+    ]
+
+
+def test_omitted_service_inventory_and_lists_do_not_raise_findings():
+    config = parse('''config firewall policy
+    edit 1
+        set srcaddr all
+        set dstaddr all
+        set service HTTPS ALL
+    next
+    edit 2
+        set srcaddr all
+        set dstaddr all
+    next
+end
+''')
+    assert not validate(config)
+
+
 def test_unused_retains_disabled_refs_orphan_group_members_exclusions_and_opaque_mentions():
     names = ["Z-Inactive", "A-Member", "A-Excluded", "Held Here", "Held Key",
              "Held Field", "Held Service", "Z-Unmentioned", "A-Unmentioned", "all"]

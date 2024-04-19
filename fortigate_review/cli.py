@@ -58,7 +58,7 @@ def _summary(config: Config, output: str) -> int:
             details = " ".join(f"{k}={json.dumps(p['settings'][k])}"
                                for k in fields if k in p["settings"])
             lines.append(f"  {p['id']} (line {p['line']}): {details}")
-        lines.extend(_findings_text(findings, "Address reference findings"))
+        lines.extend(_findings_text(findings, "Reference findings"))
         if unused.withheld_reason:
             lines.append(f"Unused address candidates withheld: {unused.withheld_reason}")
         else:
