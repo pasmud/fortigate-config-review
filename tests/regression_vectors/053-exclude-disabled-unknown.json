@@ -1,0 +1,9 @@
+{
+  "title": "An inactive exclusion still reports an unknown member once",
+  "command": "summary",
+  "config": [
+    "config firewall addrgrp", "edit SamplePack", "set member all", "set exclude disable", "set exclude-member Ghost Ghost", "next", "end",
+    "config firewall policy", "end"
+  ],
+  "expected": {"exit": 1, "findings": [["unknown-address-reference", 2, "group", "SamplePack", "exclude-member", "Ghost"]], "withheld_reason": "address-reference-findings"}
+}
