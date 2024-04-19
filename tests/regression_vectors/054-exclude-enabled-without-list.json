@@ -1,0 +1,6 @@
+{
+  "title": "An enabled exclusion without a list does not invent a finding",
+  "command": "summary",
+  "config": ["config firewall addrgrp", "edit SamplePack", "set exclude enable", "set member all", "next", "end", "config firewall policy", "end"],
+  "expected": {"exit": 0, "withheld_reason": null}
+}
