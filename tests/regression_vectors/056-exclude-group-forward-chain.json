@@ -1,0 +1,9 @@
+{
+  "title": "A forward exclusion edge resolves a group and retains its member",
+  "command": "summary",
+  "config": [
+    "config firewall addrgrp", "edit Box", "set exclude-member Sleeve", "next", "edit Sleeve", "set member Card", "next", "end",
+    "config firewall address", "edit Card", "next", "end", "config firewall policy", "end"
+  ],
+  "expected": {"exit": 0, "candidates": [], "opaque_mentions": []}
+}
