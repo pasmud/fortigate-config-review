@@ -27,6 +27,13 @@ class Finding:
     reference: str | None = None
 
 
+@dataclass(frozen=True)
+class UnusedAddresses:
+    candidates: tuple[str, ...] = ()
+    opaque_mentions: tuple[str, ...] = ()
+    withheld_reason: str | None = None
+
+
 def policy_settings(policy: Policy) -> dict[str, tuple[str, ...]]:
     """Fill selected defaults without replacing explicit values."""
     return POLICY_DEFAULTS | policy.settings
@@ -94,3 +101,31 @@ def validate(config: Config) -> tuple[Finding, ...]:
                                                 field, ref))
     findings.extend(_group_cycles(groups))
     return tuple(sorted(findings, key=lambda finding: finding.line))
+
+
+def unused_addresses(
+    config: Config, findings: tuple[Finding, ...] | None = None,
+) -> UnusedAddresses:
+    """Find addresses without an in-scope reference or an opaque name mention."""
+    if not config.has_policy_table:
+        return UnusedAddresses(withheld_reason="missing-policy-section")
+    if findings is None:
+        findings = validate(config)
+    if findings:
+        return UnusedAddresses(withheld_reason="address-reference-findings")
+    referenced = set(BUILTIN_ADDRESSES)
+    for records, fields in ((config.policies, POLICY_ADDRESS_FIELDS),
+                            (config.groups, GROUP_ADDRESS_FIELDS)):
+        for record in records:
+            for field in fields:
+                referenced.update(record.settings.get(field, ()))
+    candidates = []
+    opaque = []
+    for address in config.addresses:
+        if address.name in referenced:
+            continue
+        if address.name in config.opaque_address_mentions:
+            opaque.append(address.name)
+        else:
+            candidates.append(address.name)
+    return UnusedAddresses(tuple(candidates), tuple(opaque))

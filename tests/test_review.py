@@ -1,5 +1,5 @@
 from fortigate_review.parser import parse
-from fortigate_review.review import policy_settings, validate
+from fortigate_review.review import policy_settings, unused_addresses, validate
 
 
 def test_builtin_and_explicit_all_with_selected_policy_defaults():
@@ -69,3 +69,51 @@ def test_nested_diamond_does_not_report_a_cycle():
                               ("three", "four"), ("four", "all")]
     )
     assert not validate(parse(f"config firewall addrgrp\n{content}\nend"))
+
+
+def test_unused_retains_disabled_refs_orphan_group_members_exclusions_and_opaque_mentions():
+    names = ["Z-Inactive", "A-Member", "A-Excluded", "Held Here", "Held Key",
+             "Held Field", "Z-Unmentioned", "A-Unmentioned", "all"]
+    addresses = "\n".join(f'edit "{name}"\nnext' for name in names)
+    config = parse(f'''config firewall address
+{addresses}
+end
+config firewall addrgrp
+    edit "Unreferenced group"
+        set member A-Member
+        set exclude disable
+        set exclude-member A-Excluded
+    next
+end
+config firewall policy
+    edit 81
+        set status disable
+        set srcaddr Z-Inactive
+        set dstaddr all
+        set unmodeled-field "Held Field"
+    next
+end
+config system fictitious
+    edit "HELD KEY"
+        set object-ref "held here"
+        set unrelated "opaque arbitrary value"
+    next
+end
+''')
+    result = unused_addresses(config)
+    assert result.candidates == ("Z-Unmentioned", "A-Unmentioned")
+    assert result.opaque_mentions == ("Held Here", "Held Key", "Held Field")
+    assert not result.withheld_reason
+    assert "opaque arbitrary value" not in repr(config)
+
+
+def test_unused_withheld_without_complete_enough_reference_data():
+    addresses = "config firewall address\nedit Example\nnext\nend\n"
+    broken = "config firewall policy\nedit 9\nset srcaddr Ghost\nset dstaddr all\nnext\nend"
+    assert unused_addresses(parse(addresses)).withheld_reason == "missing-policy-section"
+    result = unused_addresses(parse(addresses + broken))
+    assert result.withheld_reason == "address-reference-findings"
+    assert not result.candidates
+    assert unused_addresses(parse(addresses + "config firewall policy\nend")).candidates == (
+        "Example",
+    )

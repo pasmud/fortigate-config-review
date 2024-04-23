@@ -55,6 +55,8 @@ class Config:
     addresses: tuple[Address, ...]
     groups: tuple[Group, ...]
     policies: tuple[Policy, ...]
+    has_policy_table: bool
+    opaque_address_mentions: frozenset[str] = field(repr=False)
 
 
 @dataclass
@@ -91,6 +93,7 @@ def parse(text: str) -> Config:
     addresses: list[Address] = []
     groups: list[Group] = []
     policies: list[Policy] = []
+    opaque_tokens: set[str] = set()
     for line, raw in enumerate(text.removeprefix("\ufeff").split("\n"), 1):
         raw = raw.removesuffix("\r")
         if CONTROL.search(raw):
@@ -126,6 +129,8 @@ def parse(text: str) -> Config:
                 if key in seen_keys[table]:
                     raise ParseError(line, "duplicate record key")
                 seen_keys[table].add(key)
+            else:
+                opaque_tokens.add(args[0].casefold())
             stack.append(_Frame("edit", line, table, key))
         elif command == "next":
             if not frame or frame.kind != "edit" or args:
@@ -152,13 +157,19 @@ def parse(text: str) -> Config:
             frame.seen.add(name)
             if name in FIELDS[table]:
                 frame.settings[name] = tuple(values)
+            else:
+                opaque_tokens.update(value.casefold() for value in values)
         elif (
             table == ("system", "global") and command == "set"
             and args[:1] == ["vdom-mode"] and args[1:] != ["no-vdom"]
         ):
             raise ParseError(line, "VDOM mode is outside the root scope")
+        else:
+            values = args[1:] if command in {"set", "append", "select", "unselect"} else args
+            opaque_tokens.update(value.casefold() for value in values)
     if stack:
         raise ParseError(stack[-1].line, f"unclosed {stack[-1].kind} block")
     if not seen_tables:
         raise ParseError(1, "no reviewed section found")
-    return Config(tuple(addresses), tuple(groups), tuple(policies))
+    mentions = frozenset(a.name for a in addresses if a.name.casefold() in opaque_tokens)
+    return Config(tuple(addresses), tuple(groups), tuple(policies), POLICY in seen_tables, mentions)
