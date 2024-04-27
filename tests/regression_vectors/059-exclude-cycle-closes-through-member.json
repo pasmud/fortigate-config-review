@@ -1,0 +1,9 @@
+{
+  "title": "An exclusion path can close its cycle on a regular member edge",
+  "command": "summary",
+  "config": [
+    "config firewall addrgrp", "edit Box", "set exclude-member Sleeve", "next", "edit Sleeve", "set member Box", "next", "end",
+    "config firewall policy", "end"
+  ],
+  "expected": {"exit": 1, "findings": [["group-cycle", 5, "group", "Sleeve", "member", "Box"]], "withheld_reason": "address-reference-findings"}
+}
