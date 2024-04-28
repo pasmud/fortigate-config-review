@@ -1,0 +1,9 @@
+{
+  "title": "Self-edges through member and exclusion are separate findings",
+  "command": "summary",
+  "config": ["config firewall addrgrp", "edit Box", "set exclude-member Box", "set member Box", "next", "end"],
+  "expected": {"exit": 1, "findings": [
+    ["group-cycle", 2, "group", "Box", "member", "Box"],
+    ["group-cycle", 2, "group", "Box", "exclude-member", "Box"]
+  ]}
+}
