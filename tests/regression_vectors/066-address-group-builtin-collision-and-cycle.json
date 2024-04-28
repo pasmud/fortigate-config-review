@@ -1,0 +1,9 @@
+{
+  "title": "The address group all can report both a collision and a cycle",
+  "command": "summary",
+  "config": ["config firewall addrgrp", "edit all", "set member all", "next", "end"],
+  "expected": {"exit": 1, "findings": [
+    ["address-name-collision", 2, "group", "all", null, null],
+    ["group-cycle", 2, "group", "all", "member", "all"]
+  ]}
+}
