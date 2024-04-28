@@ -1,0 +1,9 @@
+{
+  "title": "The exclude flag value itself does not hold an address named enable",
+  "command": "summary",
+  "config": [
+    "config firewall address", "edit enable", "next", "end",
+    "config firewall addrgrp", "edit Tray", "set exclude enable", "next", "end", "config firewall policy", "end"
+  ],
+  "expected": {"exit": 0, "candidates": ["enable"], "opaque_mentions": []}
+}
