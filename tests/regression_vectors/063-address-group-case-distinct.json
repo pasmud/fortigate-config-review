@@ -1,0 +1,10 @@
+{
+  "title": "A case-distinct group does not collide with its address counterpart",
+  "command": "summary",
+  "config": [
+    "config firewall address", "edit Tray", "next", "end",
+    "config firewall addrgrp", "edit tray", "set member all", "next", "end",
+    "config firewall policy", "edit 6", "set srcaddr tray", "set dstaddr all", "next", "end"
+  ],
+  "expected": {"exit": 0, "candidates": ["Tray"]}
+}
