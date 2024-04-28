@@ -1,0 +1,9 @@
+{
+  "title": "A lookalike exclusion setting is opaque, not a validated list",
+  "command": "summary",
+  "config": [
+    "config firewall address", "edit Card", "next", "end",
+    "config firewall addrgrp", "edit Tray", "set exclude-members Card Ghost", "next", "end", "config firewall policy", "end"
+  ],
+  "expected": {"exit": 0, "candidates": [], "opaque_mentions": ["Card"]}
+}
