@@ -1,0 +1,6 @@
+{
+  "title": "Group inventory retains exclusion token order and repeated members",
+  "command": "inventory",
+  "config": ["config firewall addrgrp", "edit Tray", "set member all", "set exclude disable", "set exclude-member Z A Z", "set category Paper", "next", "end"],
+  "expected": {"groups": [["Tray", 2, {"member": ["all"], "exclude": ["disable"], "exclude-member": ["Z", "A", "Z"]}]]}
+}
