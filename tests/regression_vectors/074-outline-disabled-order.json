@@ -1,0 +1,11 @@
+{
+  "title": "Disabled outline keeps nonnumeric order and original edit lines",
+  "command": "summary",
+  "options": ["--policy-status", "disable"],
+  "config": [
+    "config firewall policy", "edit 43", "set status disable", "set srcaddr all", "set dstaddr all", "next",
+    "edit 80", "set srcaddr all", "set dstaddr all", "next",
+    "edit 3", "set status disable", "set srcaddr all", "set dstaddr all", "next", "end"
+  ],
+  "expected": {"exit": 0, "policy_status_filter": "disable", "policy_ids": [43, 3], "policy_lines": [2, 11], "counts": {"addresses": 0, "groups": 0, "policies": 3, "services": 0, "service_groups": 0}}
+}
