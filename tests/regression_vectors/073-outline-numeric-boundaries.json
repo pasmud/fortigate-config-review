@@ -1,0 +1,9 @@
+{
+  "title": "Policy outline preserves export order at both supported ID bounds",
+  "command": "summary",
+  "config": [
+    "config firewall policy", "edit 4294967294", "set srcaddr all", "set dstaddr all", "next",
+    "edit 1", "set srcaddr all", "set dstaddr all", "next", "edit 99", "set srcaddr all", "set dstaddr all", "next", "end"
+  ],
+  "expected": {"exit": 0, "policy_ids": [4294967294, 1, 99], "policy_lines": [2, 6, 10]}
+}
