@@ -1,0 +1,11 @@
+{
+  "title": "Explicit and default enabled policies keep their shared export order",
+  "command": "summary",
+  "options": ["--policy-status", "enable"],
+  "config": [
+    "config firewall policy", "edit 10", "set status disable", "set srcaddr all", "set dstaddr all", "next",
+    "edit 23", "set status enable", "set srcaddr all", "set dstaddr all", "next",
+    "edit 2", "set srcaddr all", "set dstaddr all", "next", "end"
+  ],
+  "expected": {"exit": 0, "policy_status_filter": "enable", "policy_ids": [23, 2], "policy_lines": [7, 12]}
+}
