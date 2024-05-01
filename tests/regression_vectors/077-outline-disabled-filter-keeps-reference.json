@@ -1,0 +1,10 @@
+{
+  "title": "Hidden enabled policies still retain their exact destination labels",
+  "command": "summary",
+  "options": ["--policy-status", "disable"],
+  "config": [
+    "config firewall address", "edit Pencil", "next", "edit Spare", "next", "end",
+    "config firewall policy", "edit 4", "set srcaddr all", "set dstaddr Pencil", "next", "end"
+  ],
+  "expected": {"exit": 0, "policy_ids": [], "candidates": ["Spare"], "opaque_mentions": []}
+}
