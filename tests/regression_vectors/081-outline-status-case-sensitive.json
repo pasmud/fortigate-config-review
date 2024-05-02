@@ -1,0 +1,10 @@
+{
+  "title": "A differently cased status token is not an exact enabled match",
+  "command": "summary",
+  "options": ["--policy-status", "enable"],
+  "config": [
+    "config firewall policy", "edit 9", "set status Enable", "set srcaddr all", "set dstaddr all", "next",
+    "edit 4", "set status enable", "set srcaddr all", "set dstaddr all", "next", "end"
+  ],
+  "expected": {"exit": 0, "policy_ids": [4], "counts": {"addresses": 0, "groups": 0, "policies": 2, "services": 0, "service_groups": 0}}
+}
