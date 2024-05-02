@@ -1,0 +1,10 @@
+{
+  "title": "An omitted status passes the enabled filter regardless of deny action",
+  "command": "summary",
+  "options": ["--policy-status", "enable"],
+  "config": [
+    "config firewall policy", "edit 80", "set action deny", "set srcaddr all", "set dstaddr all", "next",
+    "edit 4", "set action accept", "set status disable", "set srcaddr all", "set dstaddr all", "next", "end"
+  ],
+  "expected": {"exit": 0, "policy_ids": [80]}
+}
