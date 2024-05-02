@@ -1,0 +1,6 @@
+{
+  "title": "A BOM, CRLF, comments and blanks preserve physical edit locations",
+  "command": "summary",
+  "config": ["\ufeff# synthetic export\r", "\r", "config firewall policy\r", "\t# outline note\r", "\tedit 13\r", "set srcaddr all\r", "set dstaddr Ghost\r", "next\r", "end\r"],
+  "expected": {"exit": 1, "policy_ids": [13], "policy_lines": [5], "findings": [["unknown-address-reference", 5, "policy", 13, "dstaddr", "Ghost"]]}
+}
