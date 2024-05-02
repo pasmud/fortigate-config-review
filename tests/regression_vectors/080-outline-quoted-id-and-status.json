@@ -1,0 +1,7 @@
+{
+  "title": "Quoted policy ID and status tokens still appear in the enabled outline",
+  "command": "summary",
+  "options": ["--policy-status", "enable"],
+  "config": ["config firewall policy", "edit \"00042\"", "set status \"enable\"", "set srcaddr all", "set dstaddr all", "next", "end"],
+  "expected": {"exit": 0, "policy_ids": [42], "policy_lines": [2]}
+}
