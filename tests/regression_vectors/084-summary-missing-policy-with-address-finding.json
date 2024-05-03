@@ -1,0 +1,9 @@
+{
+  "title": "Missing policy table takes precedence over address findings for holds",
+  "command": "summary",
+  "config": [
+    "config firewall address", "edit Spare", "next", "end",
+    "config firewall addrgrp", "edit Catalog", "set member Ghost", "next", "end"
+  ],
+  "expected": {"exit": 1, "has_policy_table": false, "policy_ids": [], "findings": [["unknown-address-reference", 6, "group", "Catalog", "member", "Ghost"]], "candidates": [], "withheld_reason": "missing-policy-section"}
+}
