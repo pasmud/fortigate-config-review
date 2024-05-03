@@ -1,0 +1,12 @@
+{
+  "title": "Address inventory retains selected range and wildcard tokens only",
+  "command": "inventory",
+  "config": [
+    "config firewall address", "edit DemoRange", "set type iprange", "set start-ip 192.0.2.10", "set end-ip 192.0.2.12", "set comment Note", "next",
+    "edit DemoWildcard", "set type wildcard", "set wildcard 198.51.100.0 0.0.0.7", "next", "end"
+  ],
+  "expected": {"addresses": [
+    ["DemoRange", 2, {"type": ["iprange"], "start-ip": ["192.0.2.10"], "end-ip": ["192.0.2.12"]}],
+    ["DemoWildcard", 8, {"type": ["wildcard"], "wildcard": ["198.51.100.0", "0.0.0.7"]}]
+  ]}
+}
