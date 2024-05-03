@@ -1,0 +1,13 @@
+{
+  "title": "Outline exposes exact token arrays and defaults, not unselected fields",
+  "command": "summary",
+  "config": [
+    "config firewall policy", "edit 11", "set name \"Paper Demo\"", "set srcaddr all all", "set dstaddr all",
+    "set srcintf \"Demo A\" DemoB", "set service HTTPS DNS", "set schedule \"\"", "set comments Hidden", "next", "end"
+  ],
+  "expected": {"exit": 0, "policy_status_filter": null, "policies": [{"id": 11, "line": 2, "settings": {
+    "name": ["Paper Demo"], "srcaddr": ["all", "all"], "dstaddr": ["all"], "srcintf": ["Demo A", "DemoB"],
+    "service": ["HTTPS", "DNS"], "schedule": [""], "action": ["deny"], "status": ["enable"], "nat": ["disable"],
+    "srcaddr-negate": ["disable"], "dstaddr-negate": ["disable"], "service-negate": ["disable"]
+  }}]}
+}
