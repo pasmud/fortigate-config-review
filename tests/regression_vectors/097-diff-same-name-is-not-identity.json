@@ -1,0 +1,14 @@
+{
+  "title": "Duplicate policy names do not merge their independent IDs or edits",
+  "command": "diff",
+  "before": [
+    "config firewall policy", "edit 13", "set name Tray", "set srcaddr all", "set dstaddr all", "next",
+    "edit 6", "set name Tray", "set srcaddr all", "set dstaddr all", "next", "end"
+  ],
+  "after": [
+    "config firewall policy", "edit 13", "set name Tray", "set srcaddr all", "set dstaddr all", "next",
+    "edit 6", "set name Tray", "set srcaddr all", "set dstaddr all", "set status disable", "next", "end"
+  ],
+  "expected": {"exit": 0, "before_order": [13, 6], "after_order": [13, 6], "has_changes": true,
+    "changed": [{"id": 6, "fields": {"status": {"before": ["enable"], "after": ["disable"]}}}]}
+}
