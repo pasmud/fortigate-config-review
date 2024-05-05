@@ -1,0 +1,9 @@
+{
+  "title": "An ignored policy category can hold an opaque address but adds no rule",
+  "command": "summary",
+  "config": [
+    "config firewall address", "edit Sample", "next", "end",
+    "config firewall policy6", "edit 40", "set srcaddr Sample", "set dstaddr Ghost", "next", "end", "config firewall policy", "end"
+  ],
+  "expected": {"exit": 0, "has_policy_table": true, "policy_ids": [], "candidates": [], "opaque_mentions": ["Sample"]}
+}
