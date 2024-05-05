@@ -1,0 +1,12 @@
+{
+  "title": "Summary counts explicit records in each of the five reviewed categories",
+  "command": "summary",
+  "config": [
+    "config firewall policy", "edit 9", "set srcaddr Tray", "set dstaddr all", "set service Bundle", "next", "end",
+    "config firewall address", "edit Card", "next", "edit Spare", "next", "end",
+    "config firewall addrgrp", "edit Tray", "set member Card", "next", "end",
+    "config firewall service group", "edit Bundle", "set member Preview ALL", "next", "end",
+    "config firewall service custom", "edit Preview", "next", "edit BackupPreview", "next", "end"
+  ],
+  "expected": {"exit": 0, "has_policy_table": true, "counts": {"addresses": 2, "groups": 1, "policies": 1, "services": 2, "service_groups": 1}, "policy_ids": [9], "candidates": ["Spare"], "opaque_mentions": []}
+}
