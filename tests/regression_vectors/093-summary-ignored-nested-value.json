@@ -1,0 +1,9 @@
+{
+  "title": "Nested ignored values hold whole address labels opaquely",
+  "command": "summary",
+  "config": [
+    "config system synthetic", "edit Outer", "config labels", "edit Inner", "append refs \"BLUE PAPER\"", "next", "end", "next", "end",
+    "config firewall address", "edit \"Blue Paper\"", "next", "edit Paper", "next", "end", "config firewall policy", "end"
+  ],
+  "expected": {"exit": 0, "candidates": ["Paper"], "opaque_mentions": ["Blue Paper"]}
+}
