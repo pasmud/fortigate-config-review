@@ -1,0 +1,6 @@
+{
+  "title": "Service group inventory retains only the ordered member list",
+  "command": "inventory",
+  "config": ["config firewall service group", "edit Preview", "set color 2", "set member HTTPS ALL \"Paper Tray\" HTTPS", "set comment Demo", "next", "end"],
+  "expected": {"service_groups": [["Preview", 2, {"member": ["HTTPS", "ALL", "Paper Tray", "HTTPS"]}]]}
+}
