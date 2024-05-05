@@ -1,0 +1,9 @@
+{
+  "title": "A VIP category alias does not enter the reviewed address namespace",
+  "command": "summary",
+  "config": [
+    "config firewall vip", "edit DemoVip", "next", "end",
+    "config firewall addrgrp", "edit Catalog", "set member DemoVip", "next", "end", "config firewall policy", "end"
+  ],
+  "expected": {"exit": 1, "findings": [["unknown-address-reference", 6, "group", "Catalog", "member", "DemoVip"]], "withheld_reason": "address-reference-findings"}
+}
