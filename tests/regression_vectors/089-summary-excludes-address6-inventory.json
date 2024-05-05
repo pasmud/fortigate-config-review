@@ -1,0 +1,9 @@
+{
+  "title": "An IPv6-category record is excluded from IPv4 address lookup",
+  "command": "summary",
+  "config": [
+    "config firewall address6", "edit DemoV6", "set ip6 2001:db8::/32", "next", "end",
+    "config firewall policy", "edit 7", "set srcaddr DemoV6", "set dstaddr all", "next", "end"
+  ],
+  "expected": {"exit": 1, "counts": {"addresses": 0, "groups": 0, "policies": 1, "services": 0, "service_groups": 0}, "findings": [["unknown-address-reference", 7, "policy", 7, "srcaddr", "DemoV6"]]}
+}
