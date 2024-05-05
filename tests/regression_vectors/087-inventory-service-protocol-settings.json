@@ -1,0 +1,12 @@
+{
+  "title": "Service inventory preserves protocol and ICMP tokens as strings",
+  "command": "inventory",
+  "config": [
+    "config firewall service custom", "edit EchoDemo", "set protocol ICMP", "set icmptype 08", "set icmpcode 0", "next",
+    "edit ProtoDemo", "set protocol IP", "set protocol-number 132", "set sctp-portrange 5000-5002", "next", "end"
+  ],
+  "expected": {"services": [
+    ["EchoDemo", 2, {"protocol": ["ICMP"], "icmptype": ["08"], "icmpcode": ["0"]}],
+    ["ProtoDemo", 7, {"protocol": ["IP"], "protocol-number": ["132"], "sctp-portrange": ["5000-5002"]}]
+  ]}
+}
