@@ -38,21 +38,28 @@ def _findings_text(findings: tuple[Finding, ...], label: str) -> list[str]:
     return lines
 
 
-def _summary(config: Config, output: str) -> int:
+def _summary(config: Config, output: str, policy_status: str | None) -> int:
     findings = validate(config)
     unused = unused_addresses(config, findings)
     counts = {"addresses": len(config.addresses), "groups": len(config.groups),
               "services": len(config.services), "service_groups": len(config.service_groups),
               "policies": len(config.policies)}
-    policies = [{"id": p.id, "line": p.line, "settings": policy_settings(p)}
-                for p in config.policies]
+    policies = []
+    for policy in config.policies:
+        settings = policy_settings(policy)
+        if policy_status is None or settings["status"] == (policy_status,):
+            policies.append({"id": policy.id, "line": policy.line, "settings": settings})
     if output == "json":
         print(json.dumps({"counts": counts, "has_policy_table": config.has_policy_table,
+                          "policy_status_filter": policy_status,
                           "policies": policies, "findings": [asdict(f) for f in findings],
                           "unused_addresses": asdict(unused)}, indent=2, sort_keys=True))
     else:
+        heading = "Policies (export order"
+        if policy_status is not None:
+            heading += f"; status={policy_status}; showing {len(policies)} of {len(config.policies)}"
         lines = ["Offline FortiGate summary", ", ".join(f"{v} {k}" for k, v in counts.items()),
-                 "Policies (export order):"]
+                 heading + "):"]
         for p in policies:
             fields = ("name", "status", "action", "srcaddr", "dstaddr")
             details = " ".join(f"{k}={json.dumps(p['settings'][k])}"
@@ -99,6 +106,8 @@ def main(argv: list[str] | None = None) -> int:
     commands = parser.add_subparsers(dest="command", required=True)
     summary = commands.add_parser("summary", help="list policies, findings, and unused candidates")
     summary.add_argument("backup", type=Path)
+    summary.add_argument("--policy-status", choices=("enable", "disable"),
+                         help="filter the policy list only; findings still cover the full export")
     diff = commands.add_parser("diff", help="compare selected policy fields and rule order")
     diff.add_argument("before", type=Path)
     diff.add_argument("after", type=Path)
@@ -108,7 +117,7 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     try:
         if args.command == "summary":
-            return _summary(_load(args.backup, "backup"), args.format)
+            return _summary(_load(args.backup, "backup"), args.format, args.policy_status)
         return _diff(_load(args.before, "before"), _load(args.after, "after"),
                      args.format, args.fail_on_change)
     except (InputError, ComparisonError) as exc:
