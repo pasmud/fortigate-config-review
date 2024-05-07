@@ -1,0 +1,10 @@
+{
+  "title": "Adding into an empty policy table reports additions in export order",
+  "command": "diff",
+  "before": ["config firewall policy", "end"],
+  "after": [
+    "config firewall policy", "edit 52", "set srcaddr all", "set dstaddr all", "next",
+    "edit 3", "set status disable", "set srcaddr all", "set dstaddr all", "next", "end"
+  ],
+  "expected": {"exit": 0, "before_order": [], "after_order": [52, 3], "added": [52, 3], "has_changes": true}
+}
