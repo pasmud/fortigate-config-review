@@ -1,0 +1,11 @@
+{
+  "title": "Deleting all policies reports removals in their former export order",
+  "command": "diff",
+  "options": ["--fail-on-change"],
+  "before": [
+    "config firewall policy", "edit 93", "set srcaddr all", "set dstaddr all", "next",
+    "edit 3", "set srcaddr all", "set dstaddr all", "next", "end"
+  ],
+  "after": ["config firewall policy", "end"],
+  "expected": {"exit": 3, "before_order": [93, 3], "after_order": [], "removed": [93, 3], "has_changes": true}
+}
