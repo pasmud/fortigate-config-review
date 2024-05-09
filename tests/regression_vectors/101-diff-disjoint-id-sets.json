@@ -1,0 +1,13 @@
+{
+  "title": "Disjoint ID sets have no surviving order to report as changed",
+  "command": "diff",
+  "before": [
+    "config firewall policy", "edit 9", "set srcaddr all", "set dstaddr all", "next",
+    "edit 2", "set srcaddr all", "set dstaddr all", "next", "end"
+  ],
+  "after": [
+    "config firewall policy", "edit 50", "set srcaddr all", "set dstaddr all", "next",
+    "edit 11", "set srcaddr all", "set dstaddr all", "next", "end"
+  ],
+  "expected": {"exit": 0, "before_order": [9, 2], "after_order": [50, 11], "added": [50, 11], "removed": [9, 2], "has_changes": true}
+}
