@@ -1,0 +1,13 @@
+{
+  "title": "Insertion between common policies preserves their relative order",
+  "command": "diff",
+  "before": [
+    "config firewall policy", "edit 8", "set srcaddr all", "set dstaddr all", "next",
+    "edit 2", "set srcaddr all", "set dstaddr all", "next", "end"
+  ],
+  "after": [
+    "config firewall policy", "edit 8", "set srcaddr all", "set dstaddr all", "next",
+    "edit 21", "set srcaddr all", "set dstaddr all", "next", "edit 2", "set srcaddr all", "set dstaddr all", "next", "end"
+  ],
+  "expected": {"exit": 0, "before_order": [8, 2], "after_order": [8, 21, 2], "added": [21], "has_changes": true}
+}
