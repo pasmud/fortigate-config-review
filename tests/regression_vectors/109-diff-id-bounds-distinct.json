@@ -1,0 +1,10 @@
+{
+  "title": "Adding the largest supported ID does not alias the minimum ID",
+  "command": "diff",
+  "before": ["config firewall policy", "edit 1", "set srcaddr all", "set dstaddr all", "next", "end"],
+  "after": [
+    "config firewall policy", "edit 4294967294", "set srcaddr all", "set dstaddr all", "next",
+    "edit 1", "set srcaddr all", "set dstaddr all", "next", "end"
+  ],
+  "expected": {"exit": 0, "before_order": [1], "after_order": [4294967294, 1], "added": [4294967294], "has_changes": true}
+}
