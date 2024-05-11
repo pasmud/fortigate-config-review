@@ -1,0 +1,14 @@
+{
+  "title": "Reordering a disabled rule counts as a clean policy order change",
+  "command": "diff",
+  "options": ["--fail-on-change"],
+  "before": [
+    "config firewall policy", "edit 12", "set status disable", "set srcaddr all", "set dstaddr all", "next",
+    "edit 5", "set srcaddr all", "set dstaddr all", "next", "end"
+  ],
+  "after": [
+    "config firewall policy", "edit 5", "set srcaddr all", "set dstaddr all", "next",
+    "edit 12", "set status disable", "set srcaddr all", "set dstaddr all", "next", "end"
+  ],
+  "expected": {"exit": 3, "before_order": [12, 5], "after_order": [5, 12], "common_order_changed": true, "has_changes": true}
+}
