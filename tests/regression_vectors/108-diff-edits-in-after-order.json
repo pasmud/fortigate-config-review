@@ -1,0 +1,15 @@
+{
+  "title": "Multiple edited policies are listed in after-export order, not by ID",
+  "command": "diff",
+  "before": [
+    "config firewall policy", "edit 2", "set srcaddr all", "set dstaddr all", "set logtraffic utm", "next",
+    "edit 90", "set srcaddr all", "set dstaddr all", "next", "end"
+  ],
+  "after": [
+    "config firewall policy", "edit 90", "set srcaddr all", "set dstaddr all", "set schedule DemoHours", "next",
+    "edit 2", "set srcaddr all", "set dstaddr all", "set logtraffic all", "next", "end"
+  ],
+  "expected": {"exit": 0, "before_order": [2, 90], "after_order": [90, 2], "common_order_changed": true, "has_changes": true,
+    "changed": [{"id": 90, "fields": {"schedule": {"before": null, "after": ["DemoHours"]}}},
+      {"id": 2, "fields": {"logtraffic": {"before": ["utm"], "after": ["all"]}}}]}
+}
