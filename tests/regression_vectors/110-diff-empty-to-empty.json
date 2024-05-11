@@ -1,0 +1,8 @@
+{
+  "title": "Two explicit empty policy tables compare cleanly with fail on change",
+  "command": "diff",
+  "options": ["--fail-on-change"],
+  "before": ["config firewall policy", "end"],
+  "after": ["# synthetic empty snapshot", "config firewall policy", "", "end"],
+  "expected": {"exit": 0, "before_order": [], "after_order": [], "has_changes": false}
+}
