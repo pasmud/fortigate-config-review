@@ -1,0 +1,13 @@
+{
+  "title": "A deletion does not conceal a rotation of the surviving IDs",
+  "command": "diff",
+  "before": [
+    "config firewall policy", "edit 9", "set srcaddr all", "set dstaddr all", "next", "edit 20", "set srcaddr all", "set dstaddr all", "next",
+    "edit 2", "set srcaddr all", "set dstaddr all", "next", "edit 14", "set srcaddr all", "set dstaddr all", "next", "end"
+  ],
+  "after": [
+    "config firewall policy", "edit 14", "set srcaddr all", "set dstaddr all", "next", "edit 9", "set srcaddr all", "set dstaddr all", "next",
+    "edit 2", "set srcaddr all", "set dstaddr all", "next", "end"
+  ],
+  "expected": {"exit": 0, "before_order": [9, 20, 2, 14], "after_order": [14, 9, 2], "removed": [20], "common_order_changed": true, "has_changes": true}
+}
