@@ -1,0 +1,61 @@
+# Entirely fictional; uses documentation-only addresses and names.
+config firewall address
+    edit "Design Workstations"
+        set subnet 192.0.2.0 255.255.255.0
+    next
+    edit "Demo Archive"
+        set type fqdn
+        set fqdn "archive.example.invalid"
+    next
+    edit "Dormant Lab"
+        set subnet 198.51.100.0 255.255.255.0
+    next
+    edit "Group Shelf"
+        set subnet 203.0.113.16 255.255.255.240
+    next
+    edit "Spare Label"
+        set subnet 203.0.113.128 255.255.255.128
+    next
+end
+config firewall addrgrp
+    edit "Design Collection"
+        set member "Design Workstations"
+    next
+    edit "Shelf Collection"
+        set member "Group Shelf"
+    next
+end
+config firewall policy
+    edit 7
+        set name "Dormant exercise"
+        set status disable
+        set srcintf "demo-lab"
+        set dstintf "demo-storage"
+        set srcaddr "Dormant Lab"
+        set dstaddr "Demo Archive"
+        set action deny
+        set schedule "always"
+        set service "HTTPS"
+    next
+    edit 42
+        set name "Fictional archive review"
+        set srcintf "demo-design"
+        set dstintf "demo-storage"
+        set srcaddr "Design Collection"
+        set dstaddr "Demo Archive"
+        set action deny
+        set schedule "always"
+        set service "HTTPS"
+        set logtraffic all
+    next
+    edit 56
+        set name "New disabled exercise"
+        set status disable
+        set srcintf "demo-design"
+        set dstintf "demo-storage"
+        set srcaddr "Design Collection"
+        set dstaddr "Demo Archive"
+        set schedule "always"
+        set service "HTTPS"
+    next
+end
