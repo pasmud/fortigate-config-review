@@ -1,0 +1,15 @@
+{
+  "title": "A changed group exclusion is not a direct edit to its policy",
+  "command": "diff",
+  "before": [
+    "config firewall address", "edit Card", "next", "end",
+    "config firewall addrgrp", "edit Box", "set member all", "set exclude disable", "next", "end",
+    "config firewall policy", "edit 4", "set srcaddr Box", "set dstaddr all", "next", "end"
+  ],
+  "after": [
+    "config firewall address", "edit Card", "next", "end",
+    "config firewall addrgrp", "edit Box", "set member all", "set exclude enable", "set exclude-member Card", "next", "end",
+    "config firewall policy", "edit 4", "set srcaddr Box", "set dstaddr all", "next", "end"
+  ],
+  "expected": {"exit": 0, "before_order": [4], "after_order": [4], "has_changes": false}
+}
