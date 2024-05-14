@@ -1,0 +1,11 @@
+{
+  "title": "All six explicit policy defaults equal omitted settings in a diff",
+  "command": "diff",
+  "options": ["--fail-on-change"],
+  "before": ["config firewall policy", "edit 9", "set srcaddr all", "set dstaddr all", "next", "end"],
+  "after": [
+    "config firewall policy", "edit 9", "set srcaddr all", "set dstaddr all", "set action deny", "set status enable", "set nat disable",
+    "set srcaddr-negate disable", "set dstaddr-negate disable", "set service-negate disable", "next", "end"
+  ],
+  "expected": {"exit": 0, "before_order": [9], "after_order": [9], "has_changes": false}
+}
