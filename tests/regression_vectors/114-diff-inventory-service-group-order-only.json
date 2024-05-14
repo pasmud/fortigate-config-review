@@ -1,0 +1,13 @@
+{
+  "title": "Service group member reorder is distinct from policy service reorder",
+  "command": "diff",
+  "before": [
+    "config firewall service group", "edit Bundle", "set member DNS HTTPS", "next", "end",
+    "config firewall policy", "edit 4", "set srcaddr all", "set dstaddr all", "set service Bundle", "next", "end"
+  ],
+  "after": [
+    "config firewall service group", "edit Bundle", "set member HTTPS DNS", "next", "end",
+    "config firewall policy", "edit 4", "set srcaddr all", "set dstaddr all", "set service Bundle", "next", "end"
+  ],
+  "expected": {"exit": 0, "before_order": [4], "after_order": [4], "has_changes": false}
+}
