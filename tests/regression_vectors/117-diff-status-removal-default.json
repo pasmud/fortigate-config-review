@@ -1,0 +1,8 @@
+{
+  "title": "Removing disabled status reports enabled rather than absent",
+  "command": "diff",
+  "before": ["config firewall policy", "edit 31", "set status disable", "set srcaddr all", "set dstaddr all", "next", "end"],
+  "after": ["config firewall policy", "edit 31", "set srcaddr all", "set dstaddr all", "next", "end"],
+  "expected": {"exit": 0, "before_order": [31], "after_order": [31], "has_changes": true,
+    "changed": [{"id": 31, "fields": {"status": {"before": ["disable"], "after": ["enable"]}}}]}
+}
