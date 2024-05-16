@@ -1,0 +1,8 @@
+{
+  "title": "A source negate edit does not change the source address token list",
+  "command": "diff",
+  "before": ["config firewall policy", "edit 5", "set srcaddr all", "set dstaddr all", "next", "end"],
+  "after": ["config firewall policy", "edit 5", "set srcaddr all", "set dstaddr all", "set srcaddr-negate enable", "next", "end"],
+  "expected": {"exit": 0, "before_order": [5], "after_order": [5], "has_changes": true,
+    "changed": [{"id": 5, "fields": {"srcaddr-negate": {"before": ["disable"], "after": ["enable"]}}}]}
+}
