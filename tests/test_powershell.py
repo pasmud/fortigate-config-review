@@ -37,6 +37,34 @@ def test_summary_wrapper_resolves_relative_literal_path_and_streams_json(pwsh, t
     assert json.loads(result.stdout)["policies"][0]["id"] == 51
 
 
+def test_summary_wrapper_status_filter_matches_cli_and_preserves_findings(pwsh, tmp_path):
+    path = tmp_path / "Fictional [site] backup.txt"
+    path.write_text('''config firewall policy
+    edit 51
+        set srcaddr Ghost
+        set dstaddr all
+    next
+    edit 7
+        set status disable
+        set srcaddr all
+        set dstaddr all
+    next
+end
+''', encoding="utf-8")
+    result = invoke(pwsh, tmp_path, "Get-FortiGateSummary.ps1", "-Path", path.name,
+                    "-Format", "Json", "-PolicyStatus", "Disable")
+    direct = subprocess.run(
+        [sys.executable, "-m", "fortigate_review", "summary", "--format", "json",
+         "--policy-status", "disable", str(path)],
+        cwd=SCRIPTS.parent, capture_output=True, text=True, check=False, timeout=30,
+    )
+    assert result.returncode == direct.returncode == 1 and not result.stderr, result.stderr
+    report = json.loads(result.stdout)
+    assert report == json.loads(direct.stdout)
+    assert [p["id"] for p in report["policies"]] == [7]
+    assert [f["key"] for f in report["findings"]] == [51]
+
+
 def test_diff_wrapper_propagates_clean_change_status(pwsh, tmp_path):
     (tmp_path / "old backup.txt").write_text(SAMPLE, encoding="utf-8")
     (tmp_path / "new backup.txt").write_text(SAMPLE.replace("51", "90"), encoding="utf-8")

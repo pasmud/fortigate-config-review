@@ -17,6 +17,7 @@ The checkout also includes PowerShell 7.4+ entry points. `-Python` accepts a Pyt
 
 ```powershell
 & ./scripts/Get-FortiGateSummary.ps1 -Path 'examples/Fictional Before.txt' -Format Json
+& ./scripts/Get-FortiGateSummary.ps1 -Path 'examples/Fictional Before.txt' -PolicyStatus Disable
 & ./scripts/Compare-FortiGatePolicy.ps1 -Before 'examples/Fictional Before.txt' -After 'examples/Fictional After.txt' -FailOnChange
 $LASTEXITCODE # 3 for this fictional change
 ```
@@ -32,7 +33,7 @@ $LASTEXITCODE # 3 for this fictional change
 
 **Summary.** Text shows inventory counts, an ordered policy outline, findings, and unused-address results. JSON includes `counts`, `has_policy_table`, `policies` (ID, `edit` line, and selected `settings` as token arrays), `findings`, and `unused_addresses`. Findings give a code, the one-based `edit` line, record type and ID/name, with a field and reference when relevant.
 
-Use `summary --policy-status enable` or `summary --policy-status disable` to narrow the outline while preserving export order. Omitted policy status counts as `enable`. Inventory counts, findings, unused-address results, and exit status still cover the full export. JSON reports the requested `policy_status_filter`, or `null` when no filter was requested.
+Use `summary --policy-status enable` or `summary --policy-status disable` to narrow the outline while preserving export order. In PowerShell, use `-PolicyStatus Enable` or `-PolicyStatus Disable`. Omitted policy status counts as `enable`. Inventory counts, findings, unused-address results, and exit status still cover the full export. JSON reports the requested `policy_status_filter`, or `null` when no filter was requested.
 
 `counts.services` and `counts.service_groups` count records explicitly included in the export. The parser retains selected protocol, port-range, and ICMP settings for services and `member` for service groups. Service names and values can still hold same-named address objects for manual review as opaque mentions.
 
