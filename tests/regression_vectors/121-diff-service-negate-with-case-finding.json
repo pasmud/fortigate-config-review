@@ -1,0 +1,9 @@
+{
+  "title": "Service negate is a field edit and does not suppress case findings",
+  "command": "diff",
+  "before": ["config firewall policy", "edit 5", "set srcaddr all", "set dstaddr all", "set service ALL", "next", "end"],
+  "after": ["config firewall policy", "edit 5", "set srcaddr all", "set dstaddr all", "set service All", "set service-negate enable", "next", "end"],
+  "expected": {"exit": 1, "before_order": [5], "after_order": [5], "has_changes": true,
+    "changed": [{"id": 5, "fields": {"service": {"before": ["ALL"], "after": ["All"]}, "service-negate": {"before": ["disable"], "after": ["enable"]}}}],
+    "findings": {"before": [], "after": [["service-reference-case-mismatch", 2, "policy", 5, "service", "All"]]}}
+}
