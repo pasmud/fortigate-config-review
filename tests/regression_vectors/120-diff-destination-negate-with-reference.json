@@ -1,0 +1,10 @@
+{
+  "title": "A negated destination still reports an unknown address in the diff",
+  "command": "diff",
+  "before": ["config firewall policy", "edit 5", "set srcaddr all", "set dstaddr Ghost", "set dstaddr-negate enable", "next", "end"],
+  "after": ["config firewall policy", "edit 5", "set srcaddr all", "set dstaddr Ghost", "next", "end"],
+  "expected": {"exit": 1, "before_order": [5], "after_order": [5], "has_changes": true,
+    "changed": [{"id": 5, "fields": {"dstaddr-negate": {"before": ["enable"], "after": ["disable"]}}}],
+    "findings": {"before": [["unknown-address-reference", 2, "policy", 5, "dstaddr", "Ghost"]],
+      "after": [["unknown-address-reference", 2, "policy", 5, "dstaddr", "Ghost"]]}}
+}
