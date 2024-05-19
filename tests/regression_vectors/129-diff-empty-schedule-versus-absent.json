@@ -1,0 +1,8 @@
+{
+  "title": "A quoted empty schedule token differs from an absent schedule",
+  "command": "diff",
+  "before": ["config firewall policy", "edit 8", "set srcaddr all", "set dstaddr all", "set schedule \"\"", "next", "end"],
+  "after": ["config firewall policy", "edit 8", "set srcaddr all", "set dstaddr all", "next", "end"],
+  "expected": {"exit": 0, "before_order": [8], "after_order": [8], "has_changes": true,
+    "changed": [{"id": 8, "fields": {"schedule": {"before": [""], "after": null}}}]}
+}
