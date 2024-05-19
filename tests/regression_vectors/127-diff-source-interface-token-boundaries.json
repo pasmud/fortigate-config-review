@@ -1,0 +1,8 @@
+{
+  "title": "One quoted interface token differs from two unquoted interface tokens",
+  "command": "diff",
+  "before": ["config firewall policy", "edit 14", "set srcaddr all", "set dstaddr all", "set srcintf \"Paper Tray\"", "next", "end"],
+  "after": ["config firewall policy", "edit 14", "set srcaddr all", "set dstaddr all", "set srcintf Paper Tray", "next", "end"],
+  "expected": {"exit": 0, "before_order": [14], "after_order": [14], "has_changes": true,
+    "changed": [{"id": 14, "fields": {"srcintf": {"before": ["Paper Tray"], "after": ["Paper", "Tray"]}}}]}
+}
