@@ -1,0 +1,10 @@
+{
+  "title": "Repeated address tokens survive diffing even with one lookup finding",
+  "command": "diff",
+  "before": ["config firewall policy", "edit 4", "set srcaddr Ghost Ghost", "set dstaddr all", "next", "end"],
+  "after": ["config firewall policy", "edit 4", "set srcaddr Ghost", "set dstaddr all", "next", "end"],
+  "expected": {"exit": 1, "before_order": [4], "after_order": [4], "has_changes": true,
+    "changed": [{"id": 4, "fields": {"srcaddr": {"before": ["Ghost", "Ghost"], "after": ["Ghost"]}}}],
+    "findings": {"before": [["unknown-address-reference", 2, "policy", 4, "srcaddr", "Ghost"]],
+      "after": [["unknown-address-reference", 2, "policy", 4, "srcaddr", "Ghost"]]}}
+}
