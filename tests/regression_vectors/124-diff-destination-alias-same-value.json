@@ -1,0 +1,14 @@
+{
+  "title": "A switch between equal-valued destination aliases is still a field edit",
+  "command": "diff",
+  "before": [
+    "config firewall address", "edit Clay", "set fqdn desk.example.invalid", "next", "edit Chalk", "set fqdn desk.example.invalid", "next", "end",
+    "config firewall policy", "edit 7", "set srcaddr all", "set dstaddr Clay", "next", "end"
+  ],
+  "after": [
+    "config firewall address", "edit Clay", "set fqdn desk.example.invalid", "next", "edit Chalk", "set fqdn desk.example.invalid", "next", "end",
+    "config firewall policy", "edit 7", "set srcaddr all", "set dstaddr Chalk", "next", "end"
+  ],
+  "expected": {"exit": 0, "before_order": [7], "after_order": [7], "has_changes": true,
+    "changed": [{"id": 7, "fields": {"dstaddr": {"before": ["Clay"], "after": ["Chalk"]}}}]}
+}
