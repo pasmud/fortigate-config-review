@@ -1,0 +1,8 @@
+{
+  "title": "Changing policy metadata alongside its name reports only the name edit",
+  "command": "diff",
+  "before": ["config firewall policy", "edit 16", "set name Tray", "set srcaddr all", "set dstaddr all", "set comments Before", "set color 3", "next", "end"],
+  "after": ["config firewall policy", "edit 16", "set name Sleeve", "set srcaddr all", "set dstaddr all", "set comments After", "set color 4", "next", "end"],
+  "expected": {"exit": 0, "before_order": [16], "after_order": [16], "has_changes": true,
+    "changed": [{"id": 16, "fields": {"name": {"before": ["Tray"], "after": ["Sleeve"]}}}]}
+}
