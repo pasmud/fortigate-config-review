@@ -1,0 +1,12 @@
+{
+  "title": "Deleting an address can introduce a finding with no policy changes",
+  "command": "diff",
+  "options": ["--fail-on-change"],
+  "before": [
+    "config firewall address", "edit Card", "next", "end",
+    "config firewall policy", "edit 7", "set srcaddr all", "set dstaddr Card", "next", "end"
+  ],
+  "after": ["config firewall policy", "edit 7", "set srcaddr all", "set dstaddr Card", "next", "end"],
+  "expected": {"exit": 1, "before_order": [7], "after_order": [7], "has_changes": false,
+    "findings": {"before": [], "after": [["unknown-address-reference", 2, "policy", 7, "dstaddr", "Card"]]}}
+}
