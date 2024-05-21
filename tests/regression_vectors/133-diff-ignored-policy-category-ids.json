@@ -1,0 +1,13 @@
+{
+  "title": "Ignored policy-category IDs never join the direct comparison set",
+  "command": "diff",
+  "before": [
+    "config firewall policy6", "edit 7", "set dstaddr Ghost", "next", "end",
+    "config firewall policy", "edit 7", "set srcaddr all", "set dstaddr all", "next", "end"
+  ],
+  "after": [
+    "config firewall policy6", "edit 83", "set dstaddr Shade", "next", "end",
+    "config firewall policy", "edit 7", "set srcaddr all", "set dstaddr all", "next", "end"
+  ],
+  "expected": {"exit": 0, "before_order": [7], "after_order": [7], "has_changes": false}
+}
