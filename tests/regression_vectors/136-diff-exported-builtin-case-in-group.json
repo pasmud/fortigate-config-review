@@ -1,0 +1,13 @@
+{
+  "title": "An exported built-in adds a group case finding without a policy edit",
+  "command": "diff",
+  "before": [
+    "config firewall service group", "edit Bundle", "set member https", "next", "end", "config firewall policy", "end"
+  ],
+  "after": [
+    "config firewall service custom", "edit HTTPS", "next", "end",
+    "config firewall service group", "edit Bundle", "set member https", "next", "end", "config firewall policy", "end"
+  ],
+  "expected": {"exit": 1, "before_order": [], "after_order": [], "has_changes": false,
+    "findings": {"before": [], "after": [["service-reference-case-mismatch", 6, "service-group", "Bundle", "member", "https"]]}}
+}
