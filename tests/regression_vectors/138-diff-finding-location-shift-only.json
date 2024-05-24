@@ -1,0 +1,10 @@
+{
+  "title": "A line shift moves a finding without changing the underlying policy",
+  "command": "diff",
+  "options": ["--fail-on-change"],
+  "before": ["config firewall policy", "edit 4", "set srcaddr all", "set dstaddr Ghost", "next", "end"],
+  "after": ["# header", "", "config firewall policy", "edit 4", "set srcaddr all", "set dstaddr Ghost", "next", "end"],
+  "expected": {"exit": 1, "before_order": [4], "after_order": [4], "has_changes": false,
+    "findings": {"before": [["unknown-address-reference", 2, "policy", 4, "dstaddr", "Ghost"]],
+      "after": [["unknown-address-reference", 4, "policy", 4, "dstaddr", "Ghost"]]}}
+}
