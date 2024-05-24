@@ -1,0 +1,34 @@
+# Entirely fictional; uses documentation-only addresses and names.
+config firewall address
+    edit "Held Review Label"
+        set subnet 192.0.2.32 255.255.255.240
+    next
+    edit "Spare Review Label"
+        set subnet 192.0.2.64 255.255.255.240
+    next
+end
+config firewall service custom
+    edit "Archive Preview"
+        set tcp-portrange 8443
+    next
+end
+config firewall service group
+    edit "Preview Suite"
+        set member "Archive Preview" HTTPS
+    next
+end
+config firewall policy
+    edit 73
+        set name "Fictional preview review"
+        set srcaddr all
+        set dstaddr all
+        set service "Preview Suite"
+    next
+    edit 11
+        set name "Fictional disabled review"
+        set status disable
+        set srcaddr "Held Review Label"
+        set dstaddr all
+        set service "preview suite"
+    next
+end

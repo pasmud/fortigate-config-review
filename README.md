@@ -13,6 +13,8 @@ python -m fortigate_review diff --format json 'examples/Fictional Before.txt' 'e
 
 The summary lists policy IDs `42, 7, 31` in export order and suggests only `Spare Label` for follow-up. `Dormant Lab` is retained because a disabled policy refers to it, and `Group Shelf` is retained because a group refers to it even though no policy uses that group. The diff adds `56`, removes `31`, reports the `action` edit to `42`, and marks the surviving IDs as reordered. Policy `7`'s explicit `deny` matches its previous omitted action.
 
+For a worked example with a reference finding, see the [synthetic review walkthrough](#synthetic-review-walkthrough).
+
 The checkout also includes PowerShell 7.4+ entry points. `-Python` accepts a Python executable name or path when `python` is not the desired interpreter. The scripts resolve relative inputs from your current directory and run the core from the checkout. Invoke them normally, not by dot-sourcing.
 
 ```powershell
@@ -62,6 +64,24 @@ Reports go to stdout, command and input errors to stderr. PowerShell forwards th
 | `1` | Report completed with address or service reference findings in at least one input. |
 | `2` | Invalid CLI arguments, unreadable or unsupported input, or missing policy table for comparison; no report. |
 | `3` | Clean diff with reportable changes and `--fail-on-change` / `-FailOnChange` enabled. |
+
+## Synthetic review walkthrough
+
+1. Review the enabled outline in [the fictional service export](examples/Fictional%20Service%20Review.txt):
+
+   ```sh
+   python -m fortigate_review summary --policy-status enable 'examples/Fictional Service Review.txt'
+   ```
+
+   The inventory counts one service, one service group, and two policies. Only policy `73` appears in the outline, but the report exits `1`: disabled policy `11` names `preview suite`, while the configured group is `Preview Suite`. Use the finding's `edit` line (27) to locate the reference. `HTTPS` is not listed as a configured service, so its absence does not produce a finding. `Held Review Label` is still referenced by policy `11`; only `Spare Review Label` is an unused-address candidate for manual review.
+
+2. Compare the separate fictional before/after pair and ask for a distinct status on changes:
+
+   ```sh
+   python -m fortigate_review diff --format json --fail-on-change 'examples/Fictional Before.txt' 'examples/Fictional After.txt'
+   ```
+
+   The command exits `3` with no reference findings. Review the added ID `56`, removed ID `31`, and policy `42`'s `action` change from `accept` to `deny`. `common_order_changed` is `true` because `42, 7` became `7, 42`, regardless of the addition and removal.
 
 ## Installation and tests
 
