@@ -55,6 +55,12 @@ Reports go to stdout, command and input errors to stderr. PowerShell forwards th
 | `2` | Invalid CLI arguments, unreadable or unsupported input, or missing policy table for comparison; no report. |
 | `3` | Clean diff with reportable changes and `--fail-on-change` / `-FailOnChange` enabled. |
 
+## Installation and tests
+
+Install the command into an activated virtual environment from the repository root with `python -m pip install .`. Then run `fortigate-config-review summary 'examples/Fictional Before.txt'` in place of `python -m fortigate_review summary ...`. The Python wheel contains the CLI and core; the PowerShell scripts and examples are in the checkout and source distribution.
+
+To develop, use `python -m pip install '.[dev]'` in your virtual environment, then run `python -m pytest -q` and `python -m ruff check .`. Wrapper integration tests skip if `pwsh` is unavailable locally. On pushes and pull requests, GitHub Actions requires hosted PowerShell on Ubuntu and Windows and smoke-tests the installed Python command outside the checkout.
+
 ## License
 
 [MIT](LICENSE).

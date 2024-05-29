@@ -15,9 +15,17 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.11'
-      - run: python -m pip install pytest ruff
+      - run: python -m pip install '.[dev]'
       - run: python -m ruff check .
       - run: python -m pytest -q --ignore=tests/test_powershell.py
+      - name: Smoke-test the installed command away from the checkout
+        shell: bash
+        working-directory: ${{ runner.temp }}
+        env:
+          EXAMPLES: ${{ github.workspace }}/examples
+        run: |
+          fortigate-config-review summary --format json "$EXAMPLES/Fictional Before.txt"
+          fortigate-config-review diff "$EXAMPLES/Fictional Before.txt" "$EXAMPLES/Fictional After.txt"
 
   powershell:
     strategy:
