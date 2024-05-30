@@ -1,0 +1,9 @@
+{
+  "title": "A finding on a newly added disabled policy takes exit precedence",
+  "command": "diff",
+  "options": ["--fail-on-change"],
+  "before": ["config firewall policy", "end"],
+  "after": ["config firewall policy", "edit 60", "set status disable", "set dstaddr all", "next", "end"],
+  "expected": {"exit": 1, "before_order": [], "after_order": [60], "added": [60], "has_changes": true,
+    "findings": {"before": [], "after": [["missing-address-list", 2, "policy", 60, "srcaddr", null]]}}
+}
