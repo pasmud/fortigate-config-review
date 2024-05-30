@@ -1,0 +1,7 @@
+{
+  "title": "An inventory-only before snapshot is not an empty policy table",
+  "command": "diff",
+  "before": ["config firewall service custom", "edit Preview", "next", "end"],
+  "after": ["config firewall policy", "end"],
+  "expected": {"exit": 2, "error": "before input must contain an explicit firewall policy section"}
+}
