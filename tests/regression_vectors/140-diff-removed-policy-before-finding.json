@@ -1,0 +1,9 @@
+{
+  "title": "A finding on a removed rule remains visible on the before side",
+  "command": "diff",
+  "options": ["--fail-on-change"],
+  "before": ["config firewall policy", "edit 5", "set srcaddr all", "set dstaddr all", "set service All", "next", "end"],
+  "after": ["config firewall policy", "end"],
+  "expected": {"exit": 1, "before_order": [5], "after_order": [], "removed": [5], "has_changes": true,
+    "findings": {"before": [["service-reference-case-mismatch", 2, "policy", 5, "service", "All"]], "after": []}}
+}
