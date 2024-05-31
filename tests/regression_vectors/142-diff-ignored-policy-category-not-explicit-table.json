@@ -1,0 +1,7 @@
+{
+  "title": "An ignored after-side policy category cannot satisfy the diff contract",
+  "command": "diff",
+  "before": ["config firewall policy", "edit 5", "set srcaddr all", "set dstaddr all", "next", "end"],
+  "after": ["config firewall address", "end", "config firewall policy6", "edit 5", "next", "end"],
+  "expected": {"exit": 2, "error": "after input must contain an explicit firewall policy section"}
+}
