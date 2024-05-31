@@ -1,0 +1,10 @@
+{
+  "title": "Colliding numeric IDs in the after snapshot fail before diff reporting",
+  "command": "diff",
+  "before": ["config firewall policy", "edit 7", "set srcaddr all", "set dstaddr all", "next", "end"],
+  "after": [
+    "config firewall policy", "edit 7", "set srcaddr all", "set dstaddr all", "next",
+    "edit 0007", "set srcaddr all", "set dstaddr all", "next", "end"
+  ],
+  "expected": {"exit": 2, "error": "after: line 6: duplicate record key"}
+}
